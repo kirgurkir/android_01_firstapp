@@ -4,8 +4,10 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.observe
-import ru.netology.R
+import ru.netology.adapter.OnLikeListener
+import ru.netology.adapter.PostsAdapter
 import ru.netology.databinding.ActivityMainBinding
+import ru.netology.dto.Post
 import ru.netology.viewmodel.PostViewModel
 
 
@@ -17,51 +19,13 @@ class MainActivity : AppCompatActivity() {
 
         val viewModel: PostViewModel by viewModels()
 
-        viewModel.post.observe(this) { post ->
-            with(binding) {
-                authorAvatarImageView.setImageResource(R.drawable.post_avatar)
-                authorView.text = post.author
-                publishedView.text = post.published
-                contentView.text = post.content
-                likeImageView.setImageResource(
-                    if (post.likedByMe) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_outline_favorite_border_24
-                )
-                likeCountView.text = countToString(post.like)
-                shareCountView.text = countToString(post.share)
-                viewCountView.text = countToString(post.view)
-            }
-        }
+        val likeListener: (post: Post) -> Unit = { viewModel.likeById(it.id) }
+        val shareListener: (post: Post) -> Unit = { viewModel.shareById(it.id) }
+        val adapter = PostsAdapter(likeListener, shareListener)
 
-        binding.likeImageView.setOnClickListener {
-            viewModel.like()
+        binding.rvPostsView.adapter = adapter
+        viewModel.postsList.observe(this) { posts ->
+            adapter.submitList(posts)
         }
-
-        binding.shareImageView.setOnClickListener {
-            viewModel.share()
-        }
-
     }
-}
-
-fun countToString(count: Int): String {
-    var res = count.toString()
-
-    if (count in 1_000..999999) {
-        res = (count / 1_000).toString()
-
-        val decimal = count % 1_000 / 100
-        if (decimal > 0) res += ".$decimal"
-
-        res += "K"
-
-    } else if (count >= 1_000_000) {
-        res = (count / 1_000_000).toString()
-
-        val decimal = count % 1_000_000 / 100_000
-        if (decimal > 0) res += ".$decimal"
-
-        res += "M"
-    }
-
-    return res
 }
