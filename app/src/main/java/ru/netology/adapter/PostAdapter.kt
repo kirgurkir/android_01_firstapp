@@ -1,5 +1,6 @@
 package ru.netology.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
@@ -10,12 +11,9 @@ import ru.netology.R
 import ru.netology.databinding.CardPostBinding
 import ru.netology.dto.Post
 
-typealias OnLikeListener = (post: Post) -> Unit
-typealias OnShareListener = (post: Post) -> Unit
-typealias OnRemoveListener = (post: Post) -> Unit
-
 interface OnInteractionListener {
     fun onLike(post: Post){}
+    fun onShare(post: Post){}
     fun onEdit(post: Post){}
     fun onRemove(post: Post){}
 }
@@ -68,6 +66,14 @@ class PostViewHolder(
                         }
                     }
                 }.show()
+            }
+
+            likeImageView.setOnClickListener {
+                onInteractionListener.onLike(post)
+            }
+
+            shareImageView.setOnClickListener {
+                onInteractionListener.onShare(post)
             }
         }
     }
