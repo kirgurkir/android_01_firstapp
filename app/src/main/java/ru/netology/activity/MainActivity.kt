@@ -42,15 +42,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fun resetInputView() {
-            binding.editGroup.visibility = View.GONE
-            with(binding.contentVextView) {
-                setText("")
-                clearFocus()
-                AndroidUtils.hideKeyboard(this)
-            }
-        }
-
         binding.rvPostsView.adapter = adapter
         viewModel.postsList.observe(this) { posts ->
             adapter.submitList(posts)
@@ -81,13 +72,24 @@ class MainActivity : AppCompatActivity() {
                 viewModel.changeContent(text.toString())
                 viewModel.save()
 
-                resetInputView()
+                binding.editGroup.visibility = android.view.View.GONE
+                with(binding.contentVextView) {
+                    setText("")
+                    clearFocus()
+                    AndroidUtils.hideKeyboard(this)
+                }
             }
         }
 
         binding.editCancelImgView.setOnClickListener {
             viewModel.cancelEdit()
-            resetInputView()
+
+            binding.editGroup.visibility = View.GONE
+            with(binding.contentVextView) {
+                setText("")
+                clearFocus()
+                AndroidUtils.hideKeyboard(this)
+            }
         }
 
     }
