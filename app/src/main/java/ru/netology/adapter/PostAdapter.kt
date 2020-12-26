@@ -42,11 +42,9 @@ class PostViewHolder(
             authorView.text = post.author
             publishedView.text = post.published
             contentView.text = post.content
-            likeImageView.setImageResource(
-                if (post.likedByMe) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_outline_favorite_border_24
-            )
-            likeCountView.text = countToString(post.like)
-            shareCountView.text = countToString(post.share)
+            likeBtnView.isChecked = post.likedByMe
+            likeBtnView.text = countToString(post.like)
+            shareBtnView.text = countToString(post.share)
             viewCountView.text = countToString(post.view)
 
             menuButtonView.setOnClickListener {
@@ -68,11 +66,11 @@ class PostViewHolder(
                 }.show()
             }
 
-            likeImageView.setOnClickListener {
+            likeBtnView.setOnClickListener {
                 onInteractionListener.onLike(post)
             }
 
-            shareImageView.setOnClickListener {
+            shareBtnView.setOnClickListener {
                 onInteractionListener.onShare(post)
             }
         }

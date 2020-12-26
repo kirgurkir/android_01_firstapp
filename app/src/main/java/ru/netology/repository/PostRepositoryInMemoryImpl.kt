@@ -24,7 +24,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             content = "Тут что-то есть, наверное",
             published = "22 мая в 18:16",
             like = 10,
-            likedByMe = false,
+            likedByMe = true,
             share = 999,
             view = 268
         ),
