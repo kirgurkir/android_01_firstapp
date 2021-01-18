@@ -3,9 +3,10 @@ package ru.netology.adapter
 import android.content.Intent
 import android.net.Uri
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import androidx.core.content.ContextCompat.startActivity
+
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +19,7 @@ interface OnInteractionListener {
     fun onShare(post: Post) {}
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
+    fun onVideo(post: Post) {}
 }
 
 class PostsAdapter(
@@ -49,14 +51,12 @@ class PostViewHolder(
             shareBtnView.text = countToString(post.share)
             viewCountView.text = countToString(post.view)
 
-            /*if (post.videoUrl != null) {
+            if (post.videoUrl != null) {
+                videoView.visibility = View.VISIBLE
                 videoView.setOnClickListener {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
-                    val shareIntent = Intent.createChooser(intent, R.string.chooser_video.toString())
-
-                    startActivity(shareIntent)
+                    onInteractionListener.onVideo(post)
                 }
-            }*/
+            }
 
             menuButtonView.setOnClickListener {
                 PopupMenu(it.context, it).apply {

@@ -24,11 +24,11 @@ class PostViewModel : ViewModel() {
         edited.value = post
     }
 
-    fun changeContent(content: String) {
+    fun changeContent(content: String, videoUrl: String?) {
         edited.value?.let {
             val text = content.trim()
             if (it.content == text) return
-            edited.value = it.copy(content = text)
+            edited.value = it.copy(content = text, videoUrl = videoUrl)
         }
     }
 

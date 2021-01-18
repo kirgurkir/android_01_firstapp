@@ -7,4 +7,5 @@
     <string name="description_post_save">Save post</string>
     <string name="error_empty_content">Content is empty</string>
     <string name="chooser_video">Open video</string>
+    <string name="video_url">Video URL</string>
 </resources>

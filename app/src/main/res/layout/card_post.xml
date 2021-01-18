@@ -85,7 +85,7 @@
             app:layout_constraintBottom_toTopOf="@id/barrierBottomView"
             android:src="@drawable/video"
             android:scaleType="centerInside"
-            />
+            android:visibility="gone" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrierBottomView"

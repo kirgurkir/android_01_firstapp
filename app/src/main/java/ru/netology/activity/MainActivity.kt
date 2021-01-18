@@ -2,11 +2,14 @@ package ru.netology.activity
 
 import android.app.Activity
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.lifecycle.observe
+import ru.netology.R
 import ru.netology.activity.NewPostActivity.Companion.EDIT_POST
+import ru.netology.activity.NewPostActivity.Companion.VIDEO_URL
 import ru.netology.adapter.OnInteractionListener
 import ru.netology.adapter.PostsAdapter
 import ru.netology.databinding.ActivityMainBinding
@@ -29,6 +32,7 @@ class MainActivity : AppCompatActivity() {
                 viewModel.edit(post)
                 val intent = Intent(this@MainActivity, NewPostActivity::class.java)
                     .putExtra(Intent.EXTRA_TEXT, post.content)
+                    .putExtra(VIDEO_URL, post.videoUrl)
                     .setAction(EDIT_POST)
                 startActivityForResult(intent, newPostRequestCode)
             }
@@ -43,6 +47,16 @@ class MainActivity : AppCompatActivity() {
 
             override fun onRemove(post: Post) {
                 viewModel.removeById(post.id)
+            }
+
+            override fun onVideo(post: Post) {
+                if (post.videoUrl != null) {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
+                    val shareIntent =
+                        Intent.createChooser(intent, getString(R.string.chooser_video))
+
+                    startActivity(shareIntent)
+                }
             }
         })
 
@@ -68,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 data?.getStringExtra(Intent.EXTRA_TEXT)?.let {
-                    viewModel.changeContent(it)
+                    viewModel.changeContent(it, data.getStringExtra(VIDEO_URL))
                     viewModel.save()
                 }
             }
