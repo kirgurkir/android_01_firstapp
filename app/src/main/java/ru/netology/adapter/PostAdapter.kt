@@ -1,9 +1,11 @@
 package ru.netology.adapter
 
-import android.util.Log
+import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,10 +14,10 @@ import ru.netology.databinding.CardPostBinding
 import ru.netology.dto.Post
 
 interface OnInteractionListener {
-    fun onLike(post: Post){}
-    fun onShare(post: Post){}
-    fun onEdit(post: Post){}
-    fun onRemove(post: Post){}
+    fun onLike(post: Post) {}
+    fun onShare(post: Post) {}
+    fun onEdit(post: Post) {}
+    fun onRemove(post: Post) {}
 }
 
 class PostsAdapter(
@@ -46,6 +48,15 @@ class PostViewHolder(
             likeBtnView.text = countToString(post.like)
             shareBtnView.text = countToString(post.share)
             viewCountView.text = countToString(post.view)
+
+            /*if (post.videoUrl != null) {
+                videoView.setOnClickListener {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
+                    val shareIntent = Intent.createChooser(intent, R.string.chooser_video.toString())
+
+                    startActivity(shareIntent)
+                }
+            }*/
 
             menuButtonView.setOnClickListener {
                 PopupMenu(it.context, it).apply {

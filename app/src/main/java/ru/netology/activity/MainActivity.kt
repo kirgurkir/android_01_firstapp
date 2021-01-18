@@ -1,32 +1,36 @@
 package ru.netology.activity
 
+import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.observe
+import ru.netology.activity.NewPostActivity.Companion.EDIT_POST
 import ru.netology.adapter.OnInteractionListener
 import ru.netology.adapter.PostsAdapter
 import ru.netology.databinding.ActivityMainBinding
+
 import ru.netology.dto.Post
-import ru.netology.util.AndroidUtils
 import ru.netology.viewmodel.PostViewModel
 
 
 class MainActivity : AppCompatActivity() {
+    private val newPostRequestCode = 1
+    private val viewModel: PostViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val viewModel: PostViewModel by viewModels()
-
         val adapter = PostsAdapter(object : OnInteractionListener {
             override fun onEdit(post: Post) {
                 viewModel.edit(post)
-                binding.editSubTitleMenu.text = post.content
-                binding.editGroup.visibility = View.VISIBLE
+                val intent = Intent(this@MainActivity, NewPostActivity::class.java)
+                    .putExtra(Intent.EXTRA_TEXT, post.content)
+                    .setAction(EDIT_POST)
+                startActivityForResult(intent, newPostRequestCode)
             }
 
             override fun onLike(post: Post) {
@@ -47,51 +51,28 @@ class MainActivity : AppCompatActivity() {
             adapter.submitList(posts)
         }
 
-        viewModel.edited.observe(this) { post ->
-            if (post.id == 0) {
-                return@observe
-            }
-
-            with(binding.contentVextView) {
-                requestFocus()
-                setText(post.content)
-            }
+        binding.addButton.setOnClickListener {
+            val intent = Intent(this, NewPostActivity::class.java)
+            startActivityForResult(intent, newPostRequestCode)
         }
 
-        binding.saveButton.setOnClickListener {
-            with(binding.contentVextView) {
-                if (text.isNullOrBlank()) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Content can't be empty",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@setOnClickListener
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            newPostRequestCode -> {
+                if (resultCode != Activity.RESULT_OK) {
+                    return
                 }
 
-                viewModel.changeContent(text.toString())
-                viewModel.save()
-
-                binding.editGroup.visibility = android.view.View.GONE
-                with(binding.contentVextView) {
-                    setText("")
-                    clearFocus()
-                    AndroidUtils.hideKeyboard(this)
+                data?.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                    viewModel.changeContent(it)
+                    viewModel.save()
                 }
             }
         }
-
-        binding.editCancelImgView.setOnClickListener {
-            viewModel.cancelEdit()
-
-            binding.editGroup.visibility = View.GONE
-            with(binding.contentVextView) {
-                setText("")
-                clearFocus()
-                AndroidUtils.hideKeyboard(this)
-            }
-        }
-
     }
 
 }

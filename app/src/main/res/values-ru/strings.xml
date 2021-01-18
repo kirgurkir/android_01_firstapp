@@ -5,4 +5,7 @@
     <string name="remove">Удалить</string>
     <string name="post_text">Текст поста</string>
     <string name="edit_message">Редактирование поста</string>
+    <string name="description_post_save">Save post</string>
+    <string name="error_empty_content">Content is empty</string>
+    <string name="chooser_video">Open video</string>
 </resources>
