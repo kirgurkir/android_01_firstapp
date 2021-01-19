@@ -1,13 +1,39 @@
 package ru.netology.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import ru.netology.dto.Post
+import androidx.core.content.edit
 
-class PostRepositoryInMemoryImpl : PostRepository {
+class PostRepositoryInMemoryImpl(
+    context: Context
+) : PostRepository {
+
+    private companion object {
+        const val POST_FILE = "posts.json"
+    }
 
     private var nextId = 1
-    private var posts = listOf(
+    private val file = context.filesDir.resolve(POST_FILE)
+    private val type = TypeToken.getParameterized(List::class.java, Post::class.java).type
+    private val gson = Gson()
+
+    private var posts: List<Post> = file.exists().let { exists ->
+        if (exists) {
+            gson.fromJson(file.readText(), type)
+        } else {
+            emptyList()
+        }
+    }
+    set(value) {
+        field = value
+        sync()
+    }
+
+    /*private var posts = listOf(
         Post(
             id = nextId++,
             author = "Нетология. Университет интернет-профессий будущего",
@@ -39,7 +65,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
             share = 4,
             view = 2_234_245
         )
-    )
+    )*/
     private val data = MutableLiveData(posts)
 
     override fun getAll(): LiveData<List<Post>> = data
@@ -59,7 +85,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
         }
 
         posts = posts.map {
-            if(it.id != post.id) it else it.copy(content = post.content, videoUrl = post.videoUrl)
+            if (it.id != post.id) it else it.copy(content = post.content, videoUrl = post.videoUrl)
         }
         data.value = posts
     }
@@ -85,5 +111,9 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun removeById(id: Int) {
         posts = posts.filter { it.id != id }
         data.value = posts
+    }
+
+    private fun sync() {
+        file.writeText(gson.toJson(posts))
     }
 }
