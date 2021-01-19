@@ -2,6 +2,7 @@ package ru.netology.adapter
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -51,7 +52,7 @@ class PostViewHolder(
             shareBtnView.text = countToString(post.share)
             viewCountView.text = countToString(post.view)
 
-            if (post.videoUrl != null) {
+            if (!post.videoUrl.isNullOrBlank()) {
                 videoView.visibility = View.VISIBLE
                 videoView.setOnClickListener {
                     onInteractionListener.onVideo(post)

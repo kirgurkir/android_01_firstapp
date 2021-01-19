@@ -50,13 +50,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onVideo(post: Post) {
-                if (post.videoUrl != null) {
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
-                    val shareIntent =
-                        Intent.createChooser(intent, getString(R.string.chooser_video))
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
+                val shareIntent = Intent.createChooser(intent, getString(R.string.chooser_video))
 
-                    startActivity(shareIntent)
-                }
+                startActivity(shareIntent)
             }
         })
 
