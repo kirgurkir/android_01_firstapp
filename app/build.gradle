@@ -38,7 +38,8 @@ dependencies {
     def recyclerview_version = "1.1.0"
     def activity_version = "1.1.0"
     def lifecycle_version = "2.2.0"
-    def arch_version = "2.1.0"
+    def fragment_version = "1.2.5"
+    def nav_version = "2.3.3"
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -53,6 +54,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+    implementation "androidx.fragment:fragment-ktx:$fragment_version"
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "com.google.code.gson:gson:2.8.6"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
 

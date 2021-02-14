@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
+import android.widget.Toast
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -21,6 +22,7 @@ interface OnInteractionListener {
     fun onEdit(post: Post) {}
     fun onRemove(post: Post) {}
     fun onVideo(post: Post) {}
+    fun onPost(post: Post) {}
 }
 
 class PostsAdapter(
@@ -57,6 +59,10 @@ class PostViewHolder(
                 videoView.setOnClickListener {
                     onInteractionListener.onVideo(post)
                 }
+            }
+
+            containerView.setOnClickListener {
+                onInteractionListener.onPost(post)
             }
 
             menuButtonView.setOnClickListener {
