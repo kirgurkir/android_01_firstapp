@@ -4,14 +4,18 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ru.netology.db.AppDb
 import ru.netology.dto.Post
 import ru.netology.repository.PostRepository
 import ru.netology.repository.PostRepositoryInMemoryImpl
+import ru.netology.repository.PostRepositorySQLiteImpl
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     // упрощённый вариант
-    private val repository: PostRepository = PostRepositoryInMemoryImpl(application)
+    private val repository: PostRepository = PostRepositorySQLiteImpl(
+        AppDb.getInstance(application).postDao
+    )
     val postsList = repository.getAll()
     val edited = MutableLiveData(empty)
 
@@ -29,7 +33,8 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     fun changeContent(content: String, videoUrl: String?) {
         edited.value?.let {
             val text = content.trim()
-            if (it.content == text) return
+            val url = videoUrl?.trim()
+            if (it.content == text && it.videoUrl == url) return
             edited.value = it.copy(content = text, videoUrl = videoUrl)
         }
     }
@@ -47,5 +52,6 @@ private val empty = Post(
     published = "",
     like = 0,
     share = 0,
-    view = 0
+    view = 0,
+    videoUrl = ""
 )
