@@ -40,6 +40,7 @@ dependencies {
     def lifecycle_version = "2.2.0"
     def fragment_version = "1.2.5"
     def nav_version = "2.3.3"
+    def room_version = "2.2.6"
 
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
@@ -59,6 +60,9 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
     implementation "com.google.code.gson:gson:2.8.6"
     kapt "androidx.lifecycle:lifecycle-compiler:$lifecycle_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

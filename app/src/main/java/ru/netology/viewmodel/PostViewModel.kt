@@ -3,18 +3,16 @@ package ru.netology.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import ru.netology.db.AppDb
-import ru.netology.dto.Post
+import ru.netology.model.db.AppDb
+import ru.netology.model.dto.Post
 import ru.netology.repository.PostRepository
-import ru.netology.repository.PostRepositoryInMemoryImpl
 import ru.netology.repository.PostRepositorySQLiteImpl
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
 
     // упрощённый вариант
     private val repository: PostRepository = PostRepositorySQLiteImpl(
-        AppDb.getInstance(application).postDao
+        AppDb.getInstance(application).postDao()
     )
     val postsList = repository.getAll()
     val edited = MutableLiveData(empty)

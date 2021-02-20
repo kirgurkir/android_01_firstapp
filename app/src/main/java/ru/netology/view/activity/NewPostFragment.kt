@@ -1,4 +1,4 @@
-package ru.netology.activity
+package ru.netology.view.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater

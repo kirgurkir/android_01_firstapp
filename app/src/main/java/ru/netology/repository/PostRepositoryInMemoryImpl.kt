@@ -5,8 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import ru.netology.dto.Post
-import androidx.core.content.edit
+import ru.netology.model.dto.Post
 
 class PostRepositoryInMemoryImpl(
     context: Context
@@ -71,7 +70,12 @@ class PostRepositoryInMemoryImpl(
     }
 
     override fun shareById(id: Int) {
-        posts = posts.map { if (it.id != id) it else it.copy(share = it.share + 1) }
+        posts = posts.map {
+            if (it.id != id) it
+            else {
+                it.copy(share = it.share + 10)
+            }
+        }
         data.value = posts
     }
 

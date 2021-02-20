@@ -1,4 +1,4 @@
-package ru.netology.activity
+package ru.netology.view.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import ru.netology.R

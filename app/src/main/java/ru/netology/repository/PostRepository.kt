@@ -1,7 +1,7 @@
 package ru.netology.repository
 
 import androidx.lifecycle.LiveData
-import ru.netology.dto.Post
+import ru.netology.model.dto.Post
 
 interface PostRepository {
 

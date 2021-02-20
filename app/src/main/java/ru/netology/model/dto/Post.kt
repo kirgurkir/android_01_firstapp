@@ -1,4 +1,4 @@
-package ru.netology.dto
+package ru.netology.model.dto
 
 data class Post(
     val id: Int,

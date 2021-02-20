@@ -1,20 +1,16 @@
-package ru.netology.adapter
+package ru.netology.view.adapter
 
-import android.content.Intent
-import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
-import android.widget.Toast
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import ru.netology.R
 import ru.netology.databinding.CardPostBinding
-import ru.netology.dto.Post
+import ru.netology.model.dto.Post
 
 interface OnInteractionListener {
     fun onLike(post: Post) {}

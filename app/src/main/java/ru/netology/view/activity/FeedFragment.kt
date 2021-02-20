@@ -1,4 +1,4 @@
-package ru.netology.activity
+package ru.netology.view.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -10,13 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
-import androidx.transition.Visibility
 import ru.netology.R
-import ru.netology.activity.NewPostFragment.Companion.isData
-import ru.netology.adapter.OnInteractionListener
-import ru.netology.adapter.PostsAdapter
+import ru.netology.view.activity.NewPostFragment.Companion.isData
+import ru.netology.view.adapter.OnInteractionListener
+import ru.netology.view.adapter.PostsAdapter
 import ru.netology.databinding.FragmentFeedBinding
-import ru.netology.dto.Post
+import ru.netology.model.dto.Post
 import ru.netology.util.IntDelegate
 import ru.netology.viewmodel.PostViewModel
 
