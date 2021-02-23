@@ -9,4 +9,7 @@
     <string name="error_empty_content">Контент отсутствует</string>
     <string name="chooser_video">Открыть видео</string>
     <string name="video_url">Ссылка на видео</string>
+    <string name="notification_user_liked">Пользователь %1$s лайкнул  пост %2$s</string>
+    <string name="channel_remote_description">Сообщение с удаленного сервера</string>
+    <string name="channel_remote_name">Серверное сообщение</string>
 </resources>
