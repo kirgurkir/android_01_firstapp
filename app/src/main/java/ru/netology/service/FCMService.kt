@@ -11,6 +11,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.R
+import ru.netology.model.dto.Post
 import java.lang.Exception
 import kotlin.random.Random
 
@@ -44,9 +45,15 @@ class FCMService : FirebaseMessagingService() {
                             Like::class.java
                         )
                     )
+                    Action.NEW_POST -> newPost(
+                        gson.fromJson(
+                            message.data[content],
+                            Post::class.java
+                        )
+                    )
                 }
             } catch (e: Exception) {
-                    Log.e("PUSH", "Action type not found", e)
+                Log.e("PUSH", "Action type not found", e)
             }
         }
     }
@@ -57,7 +64,7 @@ class FCMService : FirebaseMessagingService() {
     }
 
     private fun handleLike(content: Like) {
-        println("PUSH RECEIVED ${content.userName}")
+
         val notification = NotificationCompat.Builder(this, channelId)
             .setSmallIcon(R.drawable.ic_baseline_notifications_24)
             .setContentTitle(
@@ -73,10 +80,26 @@ class FCMService : FirebaseMessagingService() {
         NotificationManagerCompat.from(this)
             .notify(Random.nextInt(100_000), notification)
     }
+
+    private fun newPost(content: Post) {
+        val notification = NotificationCompat.Builder(this, channelId)
+            .setSmallIcon(R.drawable.ic_baseline_notifications_24)
+            .setContentTitle(getString(R.string.new_post))
+            .setContentText(getString(
+                    R.string.new_post_title,
+                    content.author
+                ))
+            .setStyle(NotificationCompat.BigTextStyle().bigText(content.content))
+            .build()
+
+        NotificationManagerCompat.from(this)
+            .notify(Random.nextInt(100_000), notification)
+    }
 }
 
 enum class Action {
     LIKE,
+    NEW_POST
 }
 
 data class Like(

@@ -9,6 +9,8 @@
     <string name="chooser_video">Open video</string>
     <string name="video_url">Video URL</string>
     <string name="notification_user_liked">User %1$s liked %2$s\'s post</string>
-    <string name="channel_remote_name">Server notifications</string>
-    <string name="channel_remote_description">Notifications from remote server</string>
+    <string name="channel_remote_name">Post</string>
+    <string name="channel_remote_description">Actions with posts</string>
+    <string name="new_post">New post!</string>
+    <string name="new_post_title">%1$s added a new post</string>
 </resources>

@@ -10,6 +10,8 @@
     <string name="chooser_video">Открыть видео</string>
     <string name="video_url">Ссылка на видео</string>
     <string name="notification_user_liked">Пользователь %1$s лайкнул  пост %2$s</string>
-    <string name="channel_remote_description">Сообщение с удаленного сервера</string>
-    <string name="channel_remote_name">Серверное сообщение</string>
+    <string name="channel_remote_description">Действия с постами</string>
+    <string name="channel_remote_name">Пост</string>
+    <string name="new_post">Новый пост!</string>
+    <string name="new_post_title">%1$s добавил новый пост</string>
 </resources>
