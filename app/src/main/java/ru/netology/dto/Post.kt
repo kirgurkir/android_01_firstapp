@@ -1,14 +1,12 @@
-package ru.netology.model.dto
+package ru.netology.dto
 
 data class Post(
-    val id: Int,
+    val id: Long,
     val author: String,
     val content: String,
     val published: String,
-    val like: Int,
+    val likes: Int,
     val likedByMe: Boolean = false,
-    val share: Int,
-    val view: Int,
-    val videoUrl: String?
+    val share: Int
 )
 

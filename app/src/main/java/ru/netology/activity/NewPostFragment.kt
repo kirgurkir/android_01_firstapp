@@ -1,4 +1,4 @@
-package ru.netology.view.activity
+package ru.netology.activity
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +16,7 @@ import ru.netology.viewmodel.PostViewModel
 class NewPostFragment : Fragment() {
 
     companion object {
-        var Bundle.isData: Pair<String, String?>? by PairStringDelegate
+        var Bundle.isData: String? by PairStringDelegate
     }
 
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
@@ -29,8 +29,7 @@ class NewPostFragment : Fragment() {
         val binding = FragmentNewPostBinding.inflate(inflater, container, false)
 
         arguments?.isData?.let {
-            binding.editView.setText(it.first)
-            binding.videoUrlView.setText(it.second)
+            binding.editView.setText(it)
         }
 
         binding.okButton.setOnClickListener {

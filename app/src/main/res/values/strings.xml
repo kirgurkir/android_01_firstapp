@@ -13,4 +13,7 @@
     <string name="channel_remote_description">Actions with posts</string>
     <string name="new_post">New post!</string>
     <string name="new_post_title">%1$s added a new post</string>
+    <string name="retry_loading">Retry loading</string>
+    <string name="empty_posts">Empty posts</string>
+    <string name="error_loading">Ошибка загрузки</string>
 </resources>

@@ -1,4 +1,4 @@
-package ru.netology.view.activity
+package ru.netology.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -6,17 +6,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import ru.netology.R
-import ru.netology.view.activity.NewPostFragment.Companion.isData
-import ru.netology.view.adapter.OnInteractionListener
-import ru.netology.view.adapter.PostsAdapter
+import ru.netology.activity.NewPostFragment.Companion.isData
+import ru.netology.adapter.OnInteractionListener
+import ru.netology.adapter.PostsAdapter
 import ru.netology.databinding.FragmentFeedBinding
-import ru.netology.model.dto.Post
-import ru.netology.util.IntDelegate
+import ru.netology.dto.Post
+import ru.netology.util.LongDelegate
 import ru.netology.viewmodel.PostViewModel
 
 
@@ -24,8 +24,8 @@ class FeedFragment : Fragment() {
     private val viewModel: PostViewModel by viewModels(ownerProducer = ::requireParentFragment)
 
     companion object {
-        var Bundle.isPostId: Int? by IntDelegate
-        var postId: Int? = null;
+        var Bundle.isPostId: Long? by LongDelegate
+        var postId: Long? = null;
     }
 
     override fun onCreateView(
@@ -42,12 +42,12 @@ class FeedFragment : Fragment() {
                 viewModel.edit(post)
                 findNavController().navigate(
                     R.id.action_feedFragment_to_newPostFragment,
-                    Bundle().apply { isData = Pair(post.content, post.videoUrl) }
+                    Bundle().apply { isData = post.content }
                 )
             }
 
             override fun onLike(post: Post) {
-                viewModel.likeById(post.id)
+                viewModel.likeById(post.id, post.likedByMe)
             }
 
             override fun onShare(post: Post) {
@@ -59,12 +59,12 @@ class FeedFragment : Fragment() {
                 if (postId != null) findNavController().navigateUp()
             }
 
-            override fun onVideo(post: Post) {
+            /*override fun onVideo(post: Post) {
                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(post.videoUrl))
                 val shareIntent = Intent.createChooser(intent, getString(R.string.chooser_video))
 
                 startActivity(shareIntent)
-            }
+            }*/
 
             override fun onPost(post: Post) {
                 if (postId == null)
@@ -78,17 +78,15 @@ class FeedFragment : Fragment() {
 
         binding.rvPostsView.adapter = adapter
 
-        if (postId != null) {
-            binding.addButton.visibility = View.GONE
-            viewModel.postsList.observe(viewLifecycleOwner) { posts ->
-                val post = posts.find { it2 -> it2.id == postId }
-                adapter.submitList(listOf(post))
-            }
+        viewModel.postsList.observe(viewLifecycleOwner, { state ->
+            adapter.submitList(state.posts)
+            binding.progress.isVisible = state.loading
+            binding.errorGroup.isVisible = state.error
+            binding.emptyText.isVisible = state.empty
+        })
 
-        } else {
-            viewModel.postsList.observe(viewLifecycleOwner) { posts ->
-                adapter.submitList(posts)
-            }
+        binding.retryButton.setOnClickListener {
+            viewModel.loadPosts()
         }
 
         binding.addButton.setOnClickListener {
