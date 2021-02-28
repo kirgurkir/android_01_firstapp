@@ -65,13 +65,24 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun likeById(id: Long, likeByMe: Boolean) {
-        if (likeByMe) {
-            thread { repository.likeById(id) }
-        } else  {
-            thread { repository.unlikeById(id) }
-        }
+        thread {
+            val status = postsList.value?.posts.orEmpty()
+                .filter {
+                    it.id == id
+                }.none { it.likedByMe }
 
-        loadPosts()
+            try {
+                if (status) {
+                    repository.likeById(id)
+                } else {
+                    repository.unlikeById(id)
+                }
+                val posts = repository.getAll()
+                _data.postValue(FeedModel(posts))
+            } catch (e: IOException) {
+                throw Exception(e)
+            }
+        }
     }
 
     fun shareById(id: Long){
