@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import ru.netology.R
 import ru.netology.activity.NewPostFragment.Companion.isData
@@ -78,12 +79,22 @@ class FeedFragment : Fragment() {
 
         binding.rvPostsView.adapter = adapter
 
-        viewModel.postsList.observe(viewLifecycleOwner, { state ->
-            adapter.submitList(state.posts)
-            binding.progress.isVisible = state.loading
-            binding.errorGroup.isVisible = state.error
-            binding.emptyText.isVisible = state.empty
-        })
+        if (postId != null) {
+            viewModel.postsList.observe(viewLifecycleOwner, { state ->
+                val post = state.posts.find { it2 -> it2.id == postId }
+                adapter.submitList(listOf(post))
+                binding.progress.isVisible = state.loading
+                binding.errorGroup.isVisible = state.error
+                binding.emptyText.isVisible = state.empty
+            })
+        } else {
+            viewModel.postsList.observe(viewLifecycleOwner, { state ->
+                adapter.submitList(state.posts)
+                binding.progress.isVisible = state.loading
+                binding.errorGroup.isVisible = state.error
+                binding.emptyText.isVisible = state.empty
+            })
+        }
 
         binding.retryButton.setOnClickListener {
             viewModel.loadPosts()
