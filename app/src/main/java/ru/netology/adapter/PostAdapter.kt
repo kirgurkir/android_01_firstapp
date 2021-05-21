@@ -2,11 +2,15 @@ package ru.netology.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupMenu
 
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.netology.R
 import ru.netology.databinding.CardPostBinding
 import ru.netology.dto.Post
@@ -39,7 +43,8 @@ class PostViewHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(post: Post) {
         binding.apply {
-            authorAvatarImageView.setImageResource(R.drawable.post_avatar)
+            val url = "http://192.168.90.200:9999/avatars/${post.authorAvatar}"
+            authorAvatarImageView.load(url)
             authorView.text = post.author
             publishedView.text = post.published
             contentView.text = post.content
@@ -120,4 +125,15 @@ fun countToString(count: Int): String {
     }
 
     return res
+}
+
+inline fun ImageView.load(url: String, init: RequestBuilder<*>.() -> Unit = {}) {
+    Glide.with(this)
+        .load(url)
+        .also(init)
+        .timeout(30_000)
+        .placeholder(R.color.netologyGreen)
+        .error(R.drawable.ic_baseline_error_24)
+        .transform(RoundedCorners(100))
+        .into(this)
 }
