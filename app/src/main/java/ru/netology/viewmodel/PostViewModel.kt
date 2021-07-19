@@ -2,24 +2,64 @@ package ru.netology.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import ru.netology.model.db.AppDb
-import ru.netology.model.dto.Post
+import ru.netology.dto.Post
+import ru.netology.model.FeedModel
 import ru.netology.repository.PostRepository
-import ru.netology.repository.PostRepositorySQLiteImpl
+import ru.netology.repository.PostRepositoryImpl
 
 class PostViewModel(application: Application) : AndroidViewModel(application) {
-
     // упрощённый вариант
-    private val repository: PostRepository = PostRepositorySQLiteImpl(
-        AppDb.getInstance(application).postDao()
-    )
-    val postsList = repository.getAll()
+    private val repository: PostRepository = PostRepositoryImpl()
+    private val _data = MutableLiveData(FeedModel())
+    val postsList: LiveData<FeedModel>
+        get() = _data
     val edited = MutableLiveData(empty)
 
+    init {
+        loadPosts()
+    }
+
+    fun loadPosts() {
+        _data.value = FeedModel(loading = true)
+        repository.getAllAsync(object : PostRepository.Callback<List<Post>> {
+            override fun onSuccess(posts: List<Post>) {
+                _data.postValue(FeedModel(posts = posts, empty = posts.isEmpty()))
+            }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
+    }
+
     fun save() {
+        val oldPosts = _data.value?.posts ?: mutableListOf()
+        _data.value = FeedModel(loading = true)
+
         edited.value?.let {
-            repository.save(it)
+            repository.saveByIdAsync(it, object : PostRepository.Callback<Post> {
+                override fun onSuccess(post: Post) {
+                    var isNew = true
+                    val newPostsList: MutableList<Post> = mutableListOf()
+
+                    oldPosts.forEach { _post ->
+                        if (_post.id == post.id) {
+                            isNew = false
+                            newPostsList.add(post)
+                        } else newPostsList.add(_post)
+                    }
+
+                    if (isNew) newPostsList.add(post)
+
+                    _data.postValue(FeedModel(posts = newPostsList.toList()))
+                }
+
+                override fun onError(e: Exception) {
+                    _data.postValue(FeedModel(errorSave = true, posts = oldPosts))
+                }
+            })
         }
         edited.value = empty
     }
@@ -29,17 +69,85 @@ class PostViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun changeContent(content: String, videoUrl: String?) {
-        edited.value?.let {
-            val text = content.trim()
-            val url = videoUrl?.trim()
-            if (it.content == text && it.videoUrl == url) return
-            edited.value = it.copy(content = text, videoUrl = videoUrl)
+        val text = content.trim()
+        if (edited.value?.content == text) {
+            return
+        }
+        edited.value = edited.value?.copy(content = text)
+    }
+
+    fun likeById(id: Long, likeByMe: Boolean) {
+        val status = postsList.value?.posts.orEmpty()
+            .filter {
+                it.id == id
+            }.none { it.likedByMe }
+
+        if (status) {
+            repository.likeByIdAsync(id, object : PostRepository.Callback<Post> {
+                override fun onSuccess(post: Post) {
+                    _data.postValue(
+                        _data.value?.copy(posts = _data.value?.posts.orEmpty()
+                            .map {
+                                if (it.id == post.id) post
+                                else it
+                            }
+                        )
+                    )
+                }
+
+                override fun onError(e: Exception) {
+                    //_data.postValue(FeedModel(error = true))
+                    _data.postValue(FeedModel(errorLikeDislike = true))
+                }
+            })
+        } else {
+            repository.unlikeByIdAsync(id, object : PostRepository.Callback<Post> {
+                override fun onSuccess(post: Post) {
+                    _data.postValue(
+                        _data.value?.copy(posts = _data.value?.posts.orEmpty()
+                            .map {
+                                if (it.id == post.id) post
+                                else it
+                            }
+                        )
+                    )
+                }
+
+                override fun onError(e: Exception) {
+                    _data.postValue(FeedModel(errorLikeDislike = true))
+                }
+            })
         }
     }
 
-    fun likeById(id: Int) = repository.likeById(id)
-    fun shareById(id: Int) = repository.shareById(id)
-    fun removeById(id: Int) = repository.removeById(id)
+    fun shareById(id: Long) {
+        //TODO А нет на сервере реализации этого функционала
+        /*thread { repository.shareById(id) }*/
+    }
+
+    fun removeById(id: Long) {
+        val oldPosts = _data.value?.posts ?: mutableListOf()
+        _data.value = FeedModel(loading = true)
+
+        repository.removeByIdAsync(id, object : PostRepository.Callback<Unit> {
+            override fun onSuccess(posts: Unit) {
+                _data.postValue(
+                    _data.value?.copy(posts = oldPosts
+                        .filter { it.id != id }
+                    )
+                )
+            }
+
+            override fun onError(e: Exception) {
+                _data.postValue(FeedModel(error = true))
+            }
+        })
+    }
+
+    fun resetFeedModel(){
+        val oldPosts = _data.value?.posts ?: mutableListOf()
+        _data.value = FeedModel(posts = oldPosts)
+    }
 }
 
 private val empty = Post(
@@ -48,8 +156,6 @@ private val empty = Post(
     author = "",
     likedByMe = false,
     published = "",
-    like = 0,
-    share = 0,
-    view = 0,
-    videoUrl = ""
+    likes = 0,
+    share = 0
 )

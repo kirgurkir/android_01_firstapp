@@ -11,7 +11,7 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.google.gson.Gson
 import ru.netology.R
-import ru.netology.model.dto.Post
+import ru.netology.dto.Post
 import java.lang.Exception
 import kotlin.random.Random
 

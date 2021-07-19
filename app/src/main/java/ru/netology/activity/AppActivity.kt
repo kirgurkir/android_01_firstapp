@@ -1,4 +1,4 @@
-package ru.netology.view.activity
+package ru.netology.activity
 
 import android.os.Bundle
 import android.util.Log
