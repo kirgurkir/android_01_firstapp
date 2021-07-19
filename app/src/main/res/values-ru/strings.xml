@@ -17,4 +17,7 @@
     <string name="retry_loading">Повтораня загрузка</string>
     <string name="error_loading">Ошибка загрузки</string>
     <string name="empty_posts">Нет постов</string>
+    <string name="like_not_update" >Не удалось обновить лайк на сервере</string>
+    <string name="sending_failed" >Отправка не удалась</string>
+    <string name="repeat">Повторить</string>
 </resources>
